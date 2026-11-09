@@ -6,7 +6,7 @@
     "build": "npx tsc",
     "start": "node dist/main.js",
     "dev": "npx tsc && node dist/main.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest --run"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +14,8 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
   },
   "type": "module"
 }
