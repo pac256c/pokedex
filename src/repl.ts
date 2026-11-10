@@ -9,10 +9,20 @@ export function startREPL(): void {
   const state: State = initState();
 
   state.rl.prompt();
-  state.rl.on("line", (input: string) => {
+  state.rl.on("line", async (input: string) => {
     const words = cleanInput(input);
     if (words.length > 0) {
-      if (words[0] in state.cmds) state.cmds[words[0]].callback(state);
+      if (words[0] in state.cmds) {
+        try {
+          await state.cmds[words[0]].callback(state);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.log(`Error encountered: ${error.message}`);
+          } else {
+            console.log(`Error encountered: ${String(error)}`);
+          } 
+        }
+      }
       else console.log("Unknown command");
     }
     state.rl.prompt();
