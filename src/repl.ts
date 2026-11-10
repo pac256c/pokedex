@@ -1,5 +1,4 @@
-import * as readline from "node:readline";
-import { CLICommand, getCommands } from "./command.js";
+import { initState, State } from "./state.js";
 
 export function cleanInput(input: string): string[] {
   const words = input.split(" ").filter(ent => ent.length > 0);
@@ -7,20 +6,15 @@ export function cleanInput(input: string): string[] {
 }
 
 export function startREPL(): void {
-  const rl = readline.createInterface({
-    input: process.stdin, 
-    output: process.stdout,
-    prompt: "Pokedex > ",
-  });
-  const cmds: Record<string, CLICommand> = getCommands(); 
+  const state: State = initState();
 
-  rl.prompt();
-  rl.on("line", (input: string) => {
+  state.rl.prompt();
+  state.rl.on("line", (input: string) => {
     const words = cleanInput(input);
     if (words.length > 0) {
-      if (words[0] in cmds) cmds[words[0]].callback(cmds);
+      if (words[0] in state.cmds) state.cmds[words[0]].callback(state);
       else console.log("Unknown command");
     }
-    rl.prompt();
+    state.rl.prompt();
   });
 }
