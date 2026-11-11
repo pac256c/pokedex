@@ -1,5 +1,5 @@
 import { Cache } from "./pokecache.js";
-import { describe, expect, it, beforeEach, afterEach } from "vitest";
+import { describe, expect, test, beforeEach, afterEach } from "vitest";
 
 // test inrastructure - functions, types, etc.
 const sleep = async (delay: number): Promise<void> => {
@@ -99,18 +99,15 @@ const sequences: Sequence[] = [
 describe.each(sequences)(`$name`, ({name, steps}) => {
     let cache: Cache;
 
-    //initial block before each sequence
     beforeEach(() => {
-      console.log(`starting test ${name}`);
       cache = new Cache(100);
     });
 
     afterEach(() => {
-      // console.log(`ending test ${name}`);
       cache.stopReapLoop();
     });
 
-    it("direct-sequences", async () => {
+    test("direct-sequences", async () => {
       for (const step of steps) {
         if (step.action === "add") {
           cache.add(...step.args);
