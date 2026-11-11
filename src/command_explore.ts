@@ -27,4 +27,4 @@ export async function commandExplore(state: State): Promise<void> {
   for (const pokemon of encs) {
     console.log(`- ${pokemon.pokemon.name}`);
   }
- }
+}

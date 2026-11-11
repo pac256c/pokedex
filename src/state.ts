@@ -3,7 +3,10 @@ import { commandHelp } from "./command_help.js";
 import { commandExit } from "./command_exit.js";
 import { commandMap, commandMapB } from "./command_map.js";
 import { commandExplore } from "./command_explore.js";
-import { PokeAPI } from "./pokeapi.js";
+import { commandCatch } from "./command_catch.js";
+import { PokeAPI, Pokemon } from "./pokeapi.js";
+import { commandInspect } from "./command_inspect.js";
+import { commandPokedex } from "./command_pokedex.js";
 
 export type CLICommand = {
   name: string;
@@ -18,6 +21,7 @@ export type State = {
   nextLocationsURL: string | null;
   prevLocationsURL: string | null;
   extraArgs: string[];
+  pokedex: Record<string, Pokemon>;
 }
 
 export function initState(): State {
@@ -55,6 +59,21 @@ export function initState(): State {
       description: "Explore an area to see what pokemon are there",
       callback: commandExplore,
     },
+    catch: {
+      name: "catch",
+      description: "Throw a pokeball at a pokemon by name and try to catch",
+      callback: commandCatch,
+    },
+    inspect: {
+      name: "inspect",
+      description: "Inspect a caught pokemon by name - stats/types/etc.",
+      callback: commandInspect,
+    },
+    pokedex: {
+      name: "pokedex",
+      description: "List caught pokemon in your pokedex",
+      callback: commandPokedex,
+    },
   };
 
   // init pokeapi, first and prev loc URLs
@@ -62,6 +81,7 @@ export function initState(): State {
   const nextLocationsURL = "";
   const prevLocationsURL = null;
   const extraArgs: string[] = [];
+  const pokedex = {};
 
   // init state
   const state: State = {
@@ -71,6 +91,7 @@ export function initState(): State {
     nextLocationsURL,
     prevLocationsURL,
     extraArgs,
+    pokedex,
   };
 
   return state;
