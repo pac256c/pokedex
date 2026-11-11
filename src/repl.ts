@@ -14,6 +14,7 @@ export function startREPL(): void {
     if (words.length > 0) {
       if (words[0] in state.cmds) {
         try {
+          state.extraArgs = words.slice(1);
           await state.cmds[words[0]].callback(state);
         } catch (error: unknown) {
           if (error instanceof Error) {

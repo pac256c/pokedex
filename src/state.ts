@@ -2,6 +2,7 @@ import { createInterface, type Interface } from "readline";
 import { commandHelp } from "./command_help.js";
 import { commandExit } from "./command_exit.js";
 import { commandMap, commandMapB } from "./command_map.js";
+import { commandExplore } from "./command_explore.js";
 import { PokeAPI } from "./pokeapi.js";
 
 export type CLICommand = {
@@ -16,6 +17,7 @@ export type State = {
   api: PokeAPI;
   nextLocationsURL: string | null;
   prevLocationsURL: string | null;
+  extraArgs: string[];
 }
 
 export function initState(): State {
@@ -48,12 +50,18 @@ export function initState(): State {
       description: "Displays names of prev 20 location areas in the Pokemon world",
       callback: commandMapB,
     },
+    explore: {
+      name: "explore",
+      description: "Explore an area to see what pokemon are there",
+      callback: commandExplore,
+    },
   };
 
   // init pokeapi, first and prev loc URLs
   const api = new PokeAPI(300_000);
   const nextLocationsURL = "";
   const prevLocationsURL = null;
+  const extraArgs: string[] = [];
 
   // init state
   const state: State = {
@@ -62,6 +70,7 @@ export function initState(): State {
     api,
     nextLocationsURL,
     prevLocationsURL,
+    extraArgs,
   };
 
   return state;
