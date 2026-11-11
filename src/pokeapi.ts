@@ -1,10 +1,18 @@
+import { Cache } from "./pokecache.js";
+
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
+  private cache: Cache;
 
-  constructor() {}
+  constructor(interval: number) {
+    this.cache = new Cache(interval);
+  }
 
-  async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
-    const url = pageURL ?? `${PokeAPI.baseURL}/location-area`;
+  async fetchCached<T>(url: string): Promise<T> {
+    const cacheEntry = this.cache.get<T>(url);
+    // console.log(`cache ${cacheEntry === undefined ? 'MISS' : 'HIT'} for URL ${url}`);
+    if (cacheEntry !== undefined) return cacheEntry;
+    
     const resp: Response = await fetch(url, {
       method: "GET",
       mode: "cors",
@@ -12,19 +20,25 @@ export class PokeAPI {
         "Content-Type": "application/json",
       },
     });
-    return resp.json();
+
+    const newEntry: T = await resp.json();
+    // console.log(`fetched item at url = ${url}, caching...`);
+    this.cache.add(url, newEntry);
+    return newEntry;
+  }
+
+  closeCache() {
+    this.cache.stopReapLoop();
+  }
+
+  async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
+    const url = pageURL ?? `${PokeAPI.baseURL}/location-area`;
+    return this.fetchCached<ShallowLocations>(url);
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
     const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
-    const resp: Response = await fetch(url, {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return resp.json();
+    return this.fetchCached<Location>(url);
   }
 }
 

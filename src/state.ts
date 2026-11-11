@@ -51,7 +51,7 @@ export function initState(): State {
   };
 
   // init pokeapi, first and prev loc URLs
-  const api = new PokeAPI();
+  const api = new PokeAPI(300_000);
   const nextLocationsURL = "";
   const prevLocationsURL = null;
 
